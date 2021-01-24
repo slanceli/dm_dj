@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+</head>
+<body>
+<div style="display: none">
+    {% csrf_token %}
+</div>
+
+<div class="login-wrap">
+    <h3>欢迎</h3>
+    <span>用户名</span>
+    <input type="text" name="name">
+
+    <span>密码</span>
+    <input type="password" name="passwd">
+
+    <span>确认密码</span>
+    <input type="password" name="re-passwd">
+
+    <button>登陆</button>
+</div>
+
+<script>
+    const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value
+    const login = document.querySelector('.login-wrap')
+    const btn = login.querySelector('button')
+    const xhr = new XMLHttpRequest();
+
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                location.href = '/'
+            } else {
+                alert('用户名或密码失败！！')
+            }
+        }
+    }
+
+    btn.addEventListener('click', function () {
+        const name = login.querySelector('input[name=name]').value
+        const passwd = login.querySelector('input[name=passwd]').value
+        const rePasswd = login.querySelector('input[name=re-passwd]').value
+
+        if (passwd !== rePasswd) {
+            return alert('密码不一致！')
+        }
+
+        xhr.open("POST", '/apiv1/login/', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+
+        xhr.send(JSON.stringify({name, passwd}))
+    })
+</script>
+</body>
+</html>
