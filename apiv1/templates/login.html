@@ -1,60 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>登陆</title>
+    <style>
+        body {
+            background-image: url('https://s3.ax1x.com/2021/01/24/sqi4c8.jpg');
+        }
+        h3 {
+            color: #f0f8ff;
+            text-align: center;
+            /* 居中 */
+            margin: 0px;
+            /* 外边距 */
+            margin-bottom: 20px;
+            margin-top: 10px;
+            font-size: 30px;
+        }
+        .login-wrap {
+            position: absolute;
+            padding-bottom: 60px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 200px;
+            background: #ffffff28;
+            border-radius: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            background: none;
+            /* 背景没有 */
+            outline: none;
+            /* 清楚聚焦时的默认的边框 */
+            color: azure;
+            display: block;
+            /* 块标签 可以使用auto值（居中） */
+            width: 200px;
+            margin: 20px auto;
+            padding: 5px 5px;
+            /* 内边距 */
+            border-color: rgb(0, 0, 0);
+            border-radius: 100px;
+            /* 圆角样式 */
+            transition: all .3s;
+        }
+
+        input[type="text"]:hover,
+        input[type="password"]:hover {
+            border-color: rgb(0, 195, 255);
+            width: 230px;
+        }
+
+        button {
+            margin: auto 119px;
+            border-radius: 50px;
+            padding: 5px 15px;
+            outline: none;
+            background: none;
+            color: floralwhite;
+            transition: all .3s;
+        }
+
+        button:hover {
+            background-color: rgb(0, 195, 255);
+        }
+    </style>
 </head>
+
 <body>
-<div style="display: none">
-    {% csrf_token %}
-</div>
+    <div style="display: none">
+        {% csrf_token %}
+    </div>
 
-<div class="login-wrap">
-    <h3>欢迎</h3>
-    <span>用户名</span>
-    <input type="text" name="name">
+    <div class="login-wrap">
+        <h3>欢迎</h3>
+        <input type="text" name="name" placeholder="默认：admin">
+        <input type="password" name="passwd" placeholder="默认：admin">
+        <input type="password" name="re-passwd" placeholder="确认密码">
+        <button>登陆</button>
+    </div>
 
-    <span>密码</span>
-    <input type="password" name="passwd">
-
-    <span>确认密码</span>
-    <input type="password" name="re-passwd">
-
-    <button>登陆</button>
-</div>
-
-<script>
-    const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value
-    const login = document.querySelector('.login-wrap')
-    const btn = login.querySelector('button')
-    const xhr = new XMLHttpRequest();
+    <script>
+        const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value
+        const login = document.querySelector('.login-wrap')
+        const btn = login.querySelector('button')
+        const xhr = new XMLHttpRequest();
 
 
-    xhr.onreadystatechange = function () {
-        if (this.readyState === XMLHttpRequest.DONE) {
-            if (this.status === 200) {
-                location.href = '/'
-            } else {
-                alert('用户名或密码失败！！')
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE) {
+                if (this.status === 200) {
+                    location.href = '/'
+                } else {
+                    alert('用户名或密码错误！！')
+                }
             }
         }
-    }
 
-    btn.addEventListener('click', function () {
-        const name = login.querySelector('input[name=name]').value
-        const passwd = login.querySelector('input[name=passwd]').value
-        const rePasswd = login.querySelector('input[name=re-passwd]').value
+        btn.addEventListener('click', function () {
+            const name = login.querySelector('input[name=name]').value
+            const passwd = login.querySelector('input[name=passwd]').value
+            const rePasswd = login.querySelector('input[name=re-passwd]').value
 
-        if (passwd !== rePasswd) {
-            return alert('密码不一致！')
-        }
+            if (passwd !== rePasswd) {
+                return alert('密码不一致！')
+            }
 
-        xhr.open("POST", '/apiv1/login/', true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.open("POST", '/apiv1/login/', true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
 
-        xhr.send(JSON.stringify({name, passwd}))
-    })
-</script>
+            xhr.send(JSON.stringify({ name, passwd }))
+        })
+    </script>
 </body>
+
 </html>
